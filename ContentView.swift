@@ -85,7 +85,7 @@ struct ContentView: View {
 struct IconChangerView: View {
     @StateObject private var appState = AppState()
     @State private var targetPath: String?
-    @State private var statusMessage: String = "Drop an App or File here to start"
+    @State private var statusMessage: String = "Drop or Select an App/File to start"
     @State private var refreshId: UUID = UUID()
 
     var body: some View {
@@ -125,7 +125,7 @@ struct IconChangerView: View {
                     Button("Clear Target") {
                         withAnimation {
                             targetPath = nil
-                            statusMessage = "Drop an App or File here to start"
+                            statusMessage = "Drop or Select an App/File to start"
                         }
                     }
                     .buttonStyle(.bordered)
@@ -152,10 +152,29 @@ struct IconChangerView: View {
                             Image(systemName: "square.and.arrow.down")
                                 .font(.largeTitle)
                                 .foregroundColor(.secondary)
-                            Text("Drop File/.app Here")
+                            Text("Drop App/File")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .padding(.top, 5)
+                            Button("Select App/File") {
+                                let panel = NSOpenPanel()
+                                panel.canChooseFiles = true
+                                panel.canChooseDirectories = true
+                                panel.allowsMultipleSelection = false
+                                if panel.runModal() == .OK, let url = panel.url {
+                                    withAnimation {
+                                        self.targetPath = url.path
+                                        self.statusMessage = "Ready for \((url.path as NSString).lastPathComponent)"
+                                    }
+                                    let name = (url.path as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+                                    if let searchUrl = URL(string: "https://macosicons.com/?search=\(name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name)") {
+                                        self.appState.webUrl = searchUrl
+                                    }
+                                }
+                            }
+                            .buttonStyle(.link)
+                            .font(.caption)
+                            .padding(.top, 5)
                         }
                     }
                     .padding()
@@ -375,7 +394,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.1.3"
+    let currentVersion = "v1.1.4"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
