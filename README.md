@@ -10,6 +10,17 @@
 
 <br/>
 
+## How to Download (For Beginners)
+
+If you aren't familiar with GitHub, downloading the app is simple!
+
+1. Click here to go to the **[Latest Release](https://github.com/wako69420/IconChanger/releases/latest)** page.
+2. Scroll down to the **Assets** section at the bottom of the release notes.
+3. Click on the **`.dmg`** file (e.g., `IconChanger-v1.1.3.dmg`) to download the app.
+4. Double-click the downloaded file and drag **Icon Changer** into your Applications folder.
+
+---
+
 ## ⚠️ Note (Gatekeeper Warning)
 
 When opening the app for the first time, you may see a warning saying: **"Apple could not verify 'IconChanger' is free of malware."**
