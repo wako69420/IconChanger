@@ -10,7 +10,7 @@
 
 <br/>
 
-## How to Download (For Beginners)
+## How to Download
 
 If you aren't familiar with GitHub, downloading the app is simple!
 
