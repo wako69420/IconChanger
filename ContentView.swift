@@ -242,23 +242,37 @@ struct IconChangerView: View {
 
             // Right Panel: Browser
             VStack(spacing: 0) {
-                HStack {
-                    Button("macOSIcons") {
-                        var name = ""
-                        if let target = targetPath {
-                            name = (target as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+                HStack(spacing: 15) {
+                    Menu("Applications ▾") {
+                        Button("macOSIcons") {
+                            var name = ""
+                            if let target = targetPath {
+                                name = (target as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+                            }
+                            if name.isEmpty {
+                                appState.webUrl = URL(string: "https://macosicons.com/")!
+                            } else {
+                                appState.webUrl = URL(string: "https://macosicons.com/?search=\(name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name)")!
+                            }
                         }
-                        if name.isEmpty {
-                            appState.webUrl = URL(string: "https://macosicons.com/")!
-                        } else {
-                            appState.webUrl = URL(string: "https://macosicons.com/?search=\(name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name)")!
-                        }
+                        Button("Icons8") { appState.webUrl = URL(string: "https://icons8.com/icons/set/mac-app")! }
+                        Button("IconArchive") { appState.webUrl = URL(string: "https://iconarchive.com/search?q=mac+app")! }
+                        Button("Dribbble") { appState.webUrl = URL(string: "https://dribbble.com/search/mac-icon")! }
+                        Button("IconScout") { appState.webUrl = URL(string: "https://iconscout.com/icons/mac-app")! }
                     }
-                    Button("Icons8") { appState.webUrl = URL(string: "https://icons8.com/icons/set/mac-app")! }
-                    Button("Flaticon") { appState.webUrl = URL(string: "https://www.flaticon.com/search?word=mac%20folder")! }
-                    Button("IconFinder") { appState.webUrl = URL(string: "https://www.iconfinder.com/search?q=mac+folder&price=free")! }
-                    Button("DeviantArt") { appState.webUrl = URL(string: "https://www.deviantart.com/search?q=mac+folder+icons")! }
+                    .buttonStyle(.bordered)
+                    
+                    Menu("Files & Folders ▾") {
+                        Button("Flaticon") { appState.webUrl = URL(string: "https://www.flaticon.com/search?word=mac%20folder")! }
+                        Button("IconFinder") { appState.webUrl = URL(string: "https://www.iconfinder.com/search?q=mac+folder&price=free")! }
+                        Button("DeviantArt") { appState.webUrl = URL(string: "https://www.deviantart.com/search?q=mac+folder+icons")! }
+                        Button("Pinterest") { appState.webUrl = URL(string: "https://www.pinterest.com/search/pins/?q=mac%20folder%20icons")! }
+                        Button("Freepik") { appState.webUrl = URL(string: "https://www.freepik.com/search?format=search&query=mac%20folder")! }
+                    }
+                    .buttonStyle(.bordered)
+                    
                     Spacer()
+                    
                     Button("Custom Site") {
                         if let url = URL(string: appState.customSiteUrl) {
                             appState.webUrl = url
@@ -599,9 +613,14 @@ struct CreditsView: View {
                     
                     CreditRow(name: "macOSIcons", url: "https://macosicons.com", desc: "A massive community-driven repository of macOS icons.")
                     CreditRow(name: "Icons8", url: "https://icons8.com", desc: "High-quality design assets and Mac icons.")
+                    CreditRow(name: "IconArchive", url: "https://iconarchive.com", desc: "Huge database of app and system icons.")
+                    CreditRow(name: "Dribbble", url: "https://dribbble.com", desc: "Creative community for UI/UX app icons.")
+                    CreditRow(name: "IconScout", url: "https://iconscout.com", desc: "High-quality vector app icons.")
                     CreditRow(name: "Flaticon", url: "https://flaticon.com", desc: "Great repository for minimal folder and UI icons.")
                     CreditRow(name: "IconFinder", url: "https://iconfinder.com", desc: "Search engine for premium and free icons.")
                     CreditRow(name: "DeviantArt", url: "https://deviantart.com", desc: "Community for artists and custom Mac folder icons.")
+                    CreditRow(name: "Pinterest", url: "https://pinterest.com", desc: "Great for finding aesthetic folder icon packs.")
+                    CreditRow(name: "Freepik", url: "https://freepik.com", desc: "High-quality graphics and folder vectors.")
                 }
             }
             .padding(40)

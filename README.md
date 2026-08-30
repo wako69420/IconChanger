@@ -47,14 +47,19 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ## 🛠️ Credits & Integration
 
-**Lead Developer:** Wako
+**Lead Developer:** wako69420
 
 This app integrates with the best icon repositories on the web to make customization seamless:
 - [**macOSIcons**](https://macosicons.com) - A massive community-driven repository of macOS icons. Thanks to the community and developers.
 - [**Icons8**](https://icons8.com) - High-quality design assets and Mac icons.
+- [**IconArchive**](https://iconarchive.com) - Huge database of app and system icons.
+- [**Dribbble**](https://dribbble.com) - Creative community for UI/UX app icons.
+- [**IconScout**](https://iconscout.com) - High-quality vector app icons.
 - [**Flaticon**](https://flaticon.com) - Great repository for minimal folder and UI icons.
 - [**IconFinder**](https://iconfinder.com) - Search engine for premium and free icons.
 - [**DeviantArt**](https://deviantart.com) - Community for artists and custom Mac folder icon packs.
+- [**Pinterest**](https://pinterest.com) - Great for finding aesthetic folder icon packs.
+- [**Freepik**](https://freepik.com) - High-quality graphics and folder vectors.
 
 ---
 
