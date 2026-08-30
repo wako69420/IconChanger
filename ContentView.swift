@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 class AppState: ObservableObject {
     @AppStorage("downloadDirectory") var downloadDirectory: String = ""
     @AppStorage("customSiteUrl") var customSiteUrl: String = "https://www.google.com/search?tbm=isch&q=mac+folder+icon"
+    @AppStorage("checkForUpdates") var checkForUpdates: Bool = true
     @Published var webUrl: URL = URL(string: "https://macosicons.com/")!
 }
 
@@ -40,7 +41,14 @@ enum NavigationItem: Hashable {
 
 struct ContentView: View {
     @AppStorage("themePreference") var themePreference: Int = 0
+    @AppStorage("checkForUpdates") var checkForUpdates = true
     @State private var selection: NavigationItem? = .iconChanger
+    
+    @State private var showUpdateAlert = false
+    @State private var updateMessage = ""
+    @State private var updateAssetUrl = ""
+    @State private var isDownloadingUpdate = false
+    let currentVersion = "v1.1.7"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -78,6 +86,75 @@ struct ContentView: View {
         }
         .preferredColorScheme(colorScheme)
         .frame(minWidth: 1000, minHeight: 650)
+        .onAppear {
+            if checkForUpdates {
+                checkUpdates()
+            }
+        }
+        .alert(isPresented: $showUpdateAlert) {
+            Alert(
+                title: Text("Update Available"),
+                message: Text(updateMessage),
+                primaryButton: .default(Text("Update Now")) {
+                    performAutoUpdate(downloadUrl: updateAssetUrl)
+                },
+                secondaryButton: .cancel(Text("Later"))
+            )
+        }
+    }
+    
+    private func checkUpdates() {
+        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChanger/releases/latest") else { return }
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            if let data = data,
+               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let tagName = json["tag_name"] as? String {
+                DispatchQueue.main.async {
+                    if tagName != self.currentVersion {
+                        self.updateMessage = "Version \(tagName) is available! You are currently on \(self.currentVersion)."
+                        if let assets = json["assets"] as? [[String: Any]],
+                           let zipAsset = assets.first(where: { ($0["name"] as? String)?.hasSuffix(".zip") == true }),
+                           let downloadUrl = zipAsset["browser_download_url"] as? String {
+                            self.updateAssetUrl = downloadUrl
+                        }
+                        self.showUpdateAlert = true
+                    }
+                }
+            }
+        }.resume()
+    }
+    
+    private func performAutoUpdate(downloadUrl: String) {
+        guard !downloadUrl.isEmpty else {
+            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/releases/latest")!)
+            return
+        }
+        let task = URLSession.shared.downloadTask(with: URL(string: downloadUrl)!) { localUrl, response, error in
+            guard let localUrl = localUrl else { return }
+            let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            try? FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+            let zipDest = tempDir.appendingPathComponent("update.zip")
+            try? FileManager.default.moveItem(at: localUrl, to: zipDest)
+            let appPath = Bundle.main.bundlePath
+            let script = """
+            #!/bin/bash
+            cd "\(tempDir.path)"
+            unzip -q update.zip
+            sleep 1
+            rm -rf "\(appPath)"
+            mv "Icon Changer.app" "\(appPath)"
+            open "\(appPath)"
+            """
+            let scriptUrl = tempDir.appendingPathComponent("update.sh")
+            try? script.write(to: scriptUrl, atomically: true, encoding: .utf8)
+            try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: scriptUrl.path)
+            let process = Process()
+            process.launchPath = "/bin/bash"
+            process.arguments = [scriptUrl.path]
+            try? process.run()
+            DispatchQueue.main.async { NSApplication.shared.terminate(nil) }
+        }
+        task.resume()
     }
 }
 
@@ -336,6 +413,7 @@ struct SettingsView: View {
     @AppStorage("themePreference") var themePreference: Int = 0
     @AppStorage("customSiteUrl") var customSiteUrl: String = "https://www.google.com/search?tbm=isch&q=mac+folder+icon"
     @AppStorage("downloadDirectory") var downloadDirectory: String = ""
+    @AppStorage("checkForUpdates") var checkForUpdates: Bool = true
 
     var body: some View {
         Form {
@@ -385,6 +463,11 @@ struct SettingsView: View {
                     }
                 }
             }
+            
+            Section(header: Text("Updates").font(.headline)) {
+                Toggle("Remind me when new updates are available", isOn: $checkForUpdates)
+                    .padding(.bottom, 20)
+            }
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -394,7 +477,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.1.6"
+    let currentVersion = "v1.1.7"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
