@@ -373,9 +373,12 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.0.0"
+    let currentVersion = "v1.1.1"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
+    @State private var updateAssetUrl: String?
+    @State private var isUpdating = false
+    @State private var updateStatus = ""
 
     var body: some View {
         VStack(spacing: 20) {
@@ -396,10 +399,24 @@ struct AboutView: View {
                         Text("Update Available: \(latestVersion)")
                             .foregroundColor(.orange)
                             .fontWeight(.semibold)
-                        Button("View on GitHub") {
-                            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/releases/latest")!)
+                        
+                        if isUpdating {
+                            Text(updateStatus)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            ProgressView()
+                                .padding(.top, 5)
+                        } else {
+                            Button("Auto Update") {
+                                if let url = updateAssetUrl {
+                                    performAutoUpdate(downloadUrl: url)
+                                } else {
+                                    // Fallback to github if no zip asset is found
+                                    NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/releases/latest")!)
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .buttonStyle(.borderedProminent)
                     }
                 } else {
                     Text("You're on the latest version.")
@@ -426,7 +443,7 @@ struct AboutView: View {
             
             Spacer()
             
-            Text("© 2026 Wako")
+            Text("© 2026 wako69420")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.bottom, 20)
@@ -446,12 +463,75 @@ struct AboutView: View {
             }
             if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let tagName = json["tag_name"] as? String {
+                
+                var zipUrl: String? = nil
+                if let assets = json["assets"] as? [[String: Any]] {
+                    for asset in assets {
+                        if let name = asset["name"] as? String, name.hasSuffix(".zip"),
+                           let dlUrl = asset["browser_download_url"] as? String {
+                            zipUrl = dlUrl
+                            break
+                        }
+                    }
+                }
+                
                 DispatchQueue.main.async {
                     self.latestVersion = tagName
                     self.updateAvailable = tagName != currentVersion
+                    self.updateAssetUrl = zipUrl
                 }
             }
         }.resume()
+    }
+    
+    private func performAutoUpdate(downloadUrl: String) {
+        isUpdating = true
+        updateStatus = "Downloading update..."
+        
+        let task = URLSession.shared.downloadTask(with: URL(string: downloadUrl)!) { localUrl, response, error in
+            guard let localUrl = localUrl else {
+                DispatchQueue.main.async {
+                    self.updateStatus = "Download failed."
+                    self.isUpdating = false
+                }
+                return
+            }
+            
+            DispatchQueue.main.async { self.updateStatus = "Extracting..." }
+            
+            let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            try? FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+            let zipDest = tempDir.appendingPathComponent("update.zip")
+            try? FileManager.default.moveItem(at: localUrl, to: zipDest)
+            
+            let appPath = Bundle.main.bundlePath
+            
+            let script = """
+            #!/bin/bash
+            cd "\(tempDir.path)"
+            unzip -q update.zip
+            sleep 1
+            rm -rf "\(appPath)"
+            mv "Icon Changer.app" "\(appPath)"
+            open "\(appPath)"
+            """
+            
+            let scriptUrl = tempDir.appendingPathComponent("update.sh")
+            try? script.write(to: scriptUrl, atomically: true, encoding: .utf8)
+            try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: scriptUrl.path)
+            
+            DispatchQueue.main.async { self.updateStatus = "Restarting app..." }
+            
+            let process = Process()
+            process.launchPath = "/bin/bash"
+            process.arguments = [scriptUrl.path]
+            process.launch()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                NSApplication.shared.terminate(nil)
+            }
+        }
+        task.resume()
     }
 }
 
@@ -505,7 +585,7 @@ struct CreditsView: View {
                     Text("Lead Developer")
                         .font(.title3)
                         .foregroundColor(.secondary)
-                    Text("Wako")
+                    Text("wako69420")
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
