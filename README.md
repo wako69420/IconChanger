@@ -79,6 +79,7 @@ Because Icon Changer uses native macOS APIs, you can change the icon for virtual
 ## Credits & Integration
 
 **Lead Developer:** wako69420
+I made this application for personal use then realized i can archive and update it here.
 
 This app integrates with the best icon repositories on the web to make customization seamless:
 - [**macOSIcons**](https://macosicons.com) - A massive community-driven repository of macOS icons. Thanks to the community and developers.
