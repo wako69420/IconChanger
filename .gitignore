@@ -1,0 +1,7 @@
+.DS_Store
+build/
+*.xcodeproj/
+*xcuserdata/
+IconChangerBinary
+module-cache/
+Icon Changer.app/
