@@ -45,7 +45,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ## Features
 
-- **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and drag an image directly from the web to instantly change its icon.
+- **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and **drag an image directly from the built-in web browser into the Target box** to instantly change its icon.
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
 - **Save Your Favorites**: Configure a custom Download Directory to permanently archive any icons you apply or download.
 - **Built-in Icon Browsing**: Browse macOSIcons, Icons8, Flaticon, IconFinder, and DeviantArt directly within the app without needing a separate web browser.
