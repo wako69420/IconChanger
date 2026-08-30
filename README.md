@@ -52,6 +52,18 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
+## Supported Targets
+
+Because Icon Changer uses native macOS APIs, you can change the icon for virtually **anything** on your Mac:
+- **Applications** (`.app`)
+- **Folders**
+- **Volumes & Hard Drives**
+- **Documents & Files** (`.pdf`, `.txt`, `.docx`, `.png`, etc.)
+- **Scripts & Executables** (`.sh`, `.py`, etc.)
+- **Aliases & Shortcuts**
+
+---
+
 ## How to Use
 
 1. **Launch the App:** Open `Icon Changer.app`.

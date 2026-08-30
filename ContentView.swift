@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.1.8"
+    let currentVersion = "v1.1.9"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -276,6 +276,13 @@ struct IconChangerView: View {
                 .cornerRadius(12)
                 .padding(.horizontal, 20)
                 
+                Text("Supports: Apps, Folders, Drives & All Files (.pdf, .txt, etc.)")
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                
                 Spacer()
                 
                 Button("Refresh Dock") {
@@ -496,7 +503,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.1.8"
+    let currentVersion = "v1.1.9"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
