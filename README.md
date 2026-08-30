@@ -58,10 +58,14 @@ This app integrates with the best icon repositories on the web to make customiza
 
 ---
 
-## 📜 License
+## 🌐 Supported Languages
+- English
 
+## 🔒 Privacy Policy
+Please refer to our [Privacy Policy](PRIVACY.md).
+
+## 📜 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
-
 Pull requests are welcome! If you'd like to add more icon sources, improve the UI, or add features, feel free to fork this repository and submit a PR.
