@@ -3,6 +3,14 @@ import WebKit
 import AppKit
 import UniformTypeIdentifiers
 
+// MARK: - AppState
+class AppState: ObservableObject {
+    @AppStorage("downloadDirectory") var downloadDirectory: String = ""
+    @AppStorage("customSiteUrl") var customSiteUrl: String = "https://www.google.com/search?tbm=isch&q=mac+folder+icon"
+    @Published var webUrl: URL = URL(string: "https://macosicons.com/")!
+}
+
+// MARK: - VisualEffectView
 struct VisualEffectView: NSViewRepresentable {
     var material: NSVisualEffectView.Material = .sidebar
     var blendingMode: NSVisualEffectView.BlendingMode = .behindWindow
@@ -21,164 +29,68 @@ struct VisualEffectView: NSViewRepresentable {
     }
 }
 
-class AppState: ObservableObject {
-    @AppStorage("downloadDirectory") var downloadDirectory: String = ""
-    @Published var webUrl: URL = URL(string: "https://macosicons.com/")!
-}
-
-struct MainView: View {
-    var body: some View {
-        TabView {
-            ContentView()
-                .tabItem {
-                    Label("Icon Changer", systemImage: "wand.and.stars")
-                }
-            
-            AboutView()
-                .tabItem {
-                    Label("About", systemImage: "info.circle")
-                }
-                
-            DocumentationView()
-                .tabItem {
-                    Label("Documentation", systemImage: "text.book.closed")
-                }
-            
-            CreditsView()
-                .tabItem {
-                    Label("Credits", systemImage: "person.2")
-                }
-        }
-        .frame(minWidth: 900, minHeight: 600)
-    }
-}
-
-struct AboutView: View {
-    var body: some View {
-        VStack(spacing: 20) {
-            Image(nsImage: NSImage(named: "NSApplicationIcon") ?? NSImage())
-                .resizable()
-                .frame(width: 128, height: 128)
-            
-            Text("Icon Changer")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
-            Text("Version 1.0")
-                .foregroundColor(.secondary)
-            
-            Text("Icon Changer is a native macOS application that allows you to seamlessly customize the icons of your files, folders, and applications with a single click or drag-and-drop. Designed for Apple Silicon and modern macOS, it integrates directly with the best icon repositories on the web.")
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 50)
-                .frame(maxWidth: 600)
-            
-            Spacer()
-        }
-        .padding(.top, 50)
-    }
-}
-
-struct DocumentationView: View {
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Documentation")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Group {
-                    Text("How to use Icon Changer").font(.title2)
-                    
-                    Text("1. Target Selection")
-                        .font(.headline)
-                    Text("Drag the file or application you want to modify and drop it into the 'Target' zone on the left sidebar.")
-                    
-                    Text("2. Finding an Icon")
-                        .font(.headline)
-                    Text("Browse the built-in repositories on the right. You can switch between macOSIcons, Icons8, Flaticon, and others using the toolbar buttons.")
-                    
-                    Text("3. Applying an Icon")
-                        .font(.headline)
-                    Text("• **Drag & Drop**: Click and drag any image from the web view directly over the Target zone to apply it instantly.\n• **One-Click**: Click the download button on any .icns file to have it applied automatically.")
-                    
-                    Text("4. Troubleshooting")
-                        .font(.headline)
-                    Text("If the icon doesn't update in your Dock immediately, click the 'Refresh Dock' button at the bottom of the sidebar. To revert an icon to its system default, click 'Restore Original Icon'.")
-                    
-                    Text("5. Saving Icons")
-                        .font(.headline)
-                    Text("Click the Gear icon in the top right to set a Download Directory. Any icons you apply will be permanently saved to this folder for future use.")
-                }
-            }
-            .padding(40)
-        }
-    }
-}
-
-struct CreditsView: View {
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: 30) {
-                Text("Credits")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                VStack(spacing: 10) {
-                    Text("Lead Developer")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                    Text("Wako")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                }
-                
-                Divider().frame(width: 200)
-                
-                VStack(spacing: 15) {
-                    Text("Integrated Services")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                    
-                    CreditRow(name: "macOSIcons", url: "https://macosicons.com", desc: "A massive community-driven repository of macOS icons. Thanks to the macOSIcons community and developers.")
-                    CreditRow(name: "Icons8", url: "https://icons8.com", desc: "High-quality design assets and Mac icons.")
-                    CreditRow(name: "Flaticon", url: "https://flaticon.com", desc: "Great repository for minimal folder and UI icons.")
-                    CreditRow(name: "IconFinder", url: "https://iconfinder.com", desc: "Search engine for premium and free icons.")
-                    CreditRow(name: "DeviantArt", url: "https://deviantart.com", desc: "Community for artists and custom Mac folder icons.")
-                }
-            }
-            .padding(40)
-        }
-    }
-}
-
-struct CreditRow: View {
-    let name: String
-    let url: String
-    let desc: String
-    var body: some View {
-        VStack {
-            Text(name).font(.headline)
-            Link(url, destination: URL(string: url)!)
-                .font(.subheadline)
-            Text(desc)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .padding(.vertical, 5)
-    }
+// MARK: - MainView
+enum NavigationItem: Hashable {
+    case iconChanger
+    case settings
+    case whatsNew
+    case about
+    case credits
 }
 
 struct ContentView: View {
+    @AppStorage("themePreference") var themePreference: Int = 0
+    @State private var selection: NavigationItem? = .iconChanger
+    
+    var colorScheme: ColorScheme? {
+        if themePreference == 1 { return .light }
+        if themePreference == 2 { return .dark }
+        return nil
+    }
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section(header: Text("App Management")) {
+                    NavigationLink(destination: IconChangerView(), tag: .iconChanger, selection: $selection) {
+                        Label("Icon Changer", systemImage: "wand.and.stars")
+                    }
+                    NavigationLink(destination: SettingsView(), tag: .settings, selection: $selection) {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                }
+                Section(header: Text("Information")) {
+                    NavigationLink(destination: WhatsNewView(), tag: .whatsNew, selection: $selection) {
+                        Label("What's New", systemImage: "sparkles")
+                    }
+                    NavigationLink(destination: AboutView(), tag: .about, selection: $selection) {
+                        Label("About", systemImage: "info.circle")
+                    }
+                    NavigationLink(destination: CreditsView(), tag: .credits, selection: $selection) {
+                        Label("Credits", systemImage: "person.2")
+                    }
+                }
+            }
+            .listStyle(SidebarListStyle())
+            .frame(minWidth: 200)
+            
+            IconChangerView()
+        }
+        .preferredColorScheme(colorScheme)
+        .frame(minWidth: 1000, minHeight: 650)
+    }
+}
+
+// MARK: - IconChangerView
+struct IconChangerView: View {
     @StateObject private var appState = AppState()
     @State private var targetPath: String?
     @State private var statusMessage: String = "Drop an App or File here to start"
     @State private var refreshId: UUID = UUID()
-    @State private var showSettings = false
 
     var body: some View {
-        NavigationView {
-            // Left Sidebar: Drop Zone
+        HStack(spacing: 0) {
+            // Left Panel: Drop Zone
             VStack {
                 Text("Target")
                     .font(.title3)
@@ -268,8 +180,8 @@ struct ContentView: View {
                     .padding(.bottom, 20)
                     .padding(.horizontal)
             }
-            .frame(minWidth: 220, maxWidth: 260, maxHeight: .infinity)
-            .background(VisualEffectView(material: .sidebar, blendingMode: .behindWindow).ignoresSafeArea())
+            .frame(width: 260, height: .infinity)
+            .background(Color(NSColor.windowBackgroundColor))
             .onDrop(of: [.fileURL, .image, .url], isTargeted: nil) { providers in
                 if let target = targetPath {
                     for provider in providers {
@@ -323,35 +235,14 @@ struct ContentView: View {
                     }
                     return true
                 }
-                
                 return false
             }
+            
+            Divider()
 
-            // Right Area: Browser
-            WebView(appState: appState) { downloadUrl in
-                guard let target = targetPath else {
-                    DispatchQueue.main.async {
-                        statusMessage = "Please drop a target file first!"
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    statusMessage = "Applying icon..."
-                }
-                
-                if let image = NSImage(contentsOf: downloadUrl) {
-                    DispatchQueue.main.async {
-                        applyImage(image, to: target)
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        statusMessage = "Invalid image file."
-                    }
-                }
-            }
-            .frame(minWidth: 600, maxWidth: .infinity, minHeight: 500, maxHeight: .infinity)
-            .toolbar {
-                ToolbarItemGroup(placement: .automatic) {
+            // Right Panel: Browser
+            VStack(spacing: 0) {
+                HStack {
                     Button("macOSIcons") {
                         var name = ""
                         if let target = targetPath {
@@ -363,62 +254,39 @@ struct ContentView: View {
                             appState.webUrl = URL(string: "https://macosicons.com/?search=\(name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name)")!
                         }
                     }
-                    Button("Icons8") {
-                        appState.webUrl = URL(string: "https://icons8.com/icons/set/mac-app")!
-                    }
-                    Button("Flaticon") {
-                        appState.webUrl = URL(string: "https://www.flaticon.com/search?word=mac%20folder")!
-                    }
-                    Button("IconFinder") {
-                        appState.webUrl = URL(string: "https://www.iconfinder.com/search?q=mac+folder&price=free")!
-                    }
-                    Button("DeviantArt") {
-                        appState.webUrl = URL(string: "https://www.deviantart.com/search?q=mac+folder+icons")!
-                    }
-                    
+                    Button("Icons8") { appState.webUrl = URL(string: "https://icons8.com/icons/set/mac-app")! }
+                    Button("Flaticon") { appState.webUrl = URL(string: "https://www.flaticon.com/search?word=mac%20folder")! }
+                    Button("IconFinder") { appState.webUrl = URL(string: "https://www.iconfinder.com/search?q=mac+folder&price=free")! }
+                    Button("DeviantArt") { appState.webUrl = URL(string: "https://www.deviantart.com/search?q=mac+folder+icons")! }
                     Spacer()
-                    
-                    Button(action: { showSettings.toggle() }) {
-                        Image(systemName: "gearshape")
-                    }
-                    .popover(isPresented: $showSettings, arrowEdge: .bottom) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Settings")
-                                .font(.headline)
-                            
-                            Text("Download Directory:")
-                            
-                            HStack {
-                                Text(appState.downloadDirectory.isEmpty ? "Default (Temporary)" : appState.downloadDirectory)
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
-                                    .frame(width: 200, alignment: .leading)
-                                
-                                Button("Change") {
-                                    let panel = NSOpenPanel()
-                                    panel.canChooseFiles = false
-                                    panel.canChooseDirectories = true
-                                    panel.allowsMultipleSelection = false
-                                    
-                                    if panel.runModal() == .OK, let url = panel.url {
-                                        appState.downloadDirectory = url.path
-                                    }
-                                }
-                            }
-                            
-                            if !appState.downloadDirectory.isEmpty {
-                                Button("Reset to Default") {
-                                    appState.downloadDirectory = ""
-                                }
-                                .padding(.top, 5)
-                            }
+                    Button("Custom Site") {
+                        if let url = URL(string: appState.customSiteUrl) {
+                            appState.webUrl = url
                         }
-                        .padding()
-                        .frame(width: 350)
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding(10)
+                .background(Color(NSColor.controlBackgroundColor))
+                
+                Divider()
+                
+                WebView(appState: appState) { downloadUrl in
+                    guard let target = targetPath else {
+                        DispatchQueue.main.async { statusMessage = "Please drop a target file first!" }
+                        return
+                    }
+                    DispatchQueue.main.async { statusMessage = "Applying icon..." }
+                    
+                    if let image = NSImage(contentsOf: downloadUrl) {
+                        DispatchQueue.main.async { applyImage(image, to: target) }
+                    } else {
+                        DispatchQueue.main.async { statusMessage = "Invalid image file." }
                     }
                 }
             }
         }
+        .navigationTitle("Icon Changer")
     }
     
     private func applyImage(_ image: NSImage, to target: String) {
@@ -426,26 +294,262 @@ struct ContentView: View {
         if success {
             statusMessage = "Icon successfully updated!"
             refreshId = UUID()
-            
-            // Save a copy if a custom directory is set
             if !appState.downloadDirectory.isEmpty {
                 let saveDir = URL(fileURLWithPath: appState.downloadDirectory)
                 let fileName = (target as NSString).lastPathComponent + "_\(UUID().uuidString.prefix(4)).png"
                 let saveUrl = saveDir.appendingPathComponent(fileName)
-                
                 if let tiffData = image.tiffRepresentation,
                    let bitmapImage = NSBitmapImageRep(data: tiffData),
                    let pngData = bitmapImage.representation(using: .png, properties: [:]) {
                     try? pngData.write(to: saveUrl)
                 }
             }
-            
         } else {
             statusMessage = "Failed to set icon. Check permissions."
         }
     }
 }
 
+// MARK: - SettingsView
+struct SettingsView: View {
+    @AppStorage("themePreference") var themePreference: Int = 0
+    @AppStorage("customSiteUrl") var customSiteUrl: String = "https://www.google.com/search?tbm=isch&q=mac+folder+icon"
+    @AppStorage("downloadDirectory") var downloadDirectory: String = ""
+
+    var body: some View {
+        Form {
+            Section(header: Text("Appearance").font(.headline)) {
+                Picker("Theme", selection: $themePreference) {
+                    Text("System").tag(0)
+                    Text("Light").tag(1)
+                    Text("Dark").tag(2)
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .frame(width: 250)
+                .padding(.bottom, 20)
+            }
+            
+            Section(header: Text("Custom Site").font(.headline)) {
+                Text("Set your own custom URL to browse for icons.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                TextField("Custom URL", text: $customSiteUrl)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(maxWidth: 400)
+                    .padding(.bottom, 20)
+            }
+            
+            Section(header: Text("Download Directory").font(.headline)) {
+                Text("Where to permanently archive applied icons.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                HStack {
+                    Text(downloadDirectory.isEmpty ? "Default (Temporary)" : downloadDirectory)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .frame(width: 300, alignment: .leading)
+                    
+                    Button("Change") {
+                        let panel = NSOpenPanel()
+                        panel.canChooseFiles = false
+                        panel.canChooseDirectories = true
+                        panel.allowsMultipleSelection = false
+                        if panel.runModal() == .OK, let url = panel.url {
+                            downloadDirectory = url.path
+                        }
+                    }
+                    if !downloadDirectory.isEmpty {
+                        Button("Clear") { downloadDirectory = "" }
+                    }
+                }
+            }
+        }
+        .padding(40)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .navigationTitle("Settings")
+    }
+}
+
+// MARK: - AboutView
+struct AboutView: View {
+    let currentVersion = "v1.0.0"
+    @State private var latestVersion = "Checking..."
+    @State private var updateAvailable = false
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(nsImage: NSImage(named: "NSApplicationIcon") ?? NSImage())
+                .resizable()
+                .frame(width: 128, height: 128)
+            
+            Text("Icon Changer")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+            
+            Text("Version \(currentVersion)")
+                .foregroundColor(.secondary)
+            
+            if latestVersion != "Checking..." {
+                if updateAvailable {
+                    VStack(spacing: 5) {
+                        Text("Update Available: \(latestVersion)")
+                            .foregroundColor(.orange)
+                            .fontWeight(.semibold)
+                        Button("View on GitHub") {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/releases/latest")!)
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    Text("You're on the latest version.")
+                        .foregroundColor(.green)
+                        .fontWeight(.semibold)
+                }
+            }
+            
+            Text("A utility hub for your Mac icons.\nDrag and drop customization directly from the web.")
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 50)
+                .padding(.top, 20)
+                .frame(maxWidth: 600)
+            
+            HStack(spacing: 20) {
+                Button("View on GitHub") {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger")!)
+                }
+                Button("View Privacy Policy") {
+                    NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/blob/main/PRIVACY.md")!)
+                }
+            }
+            .padding(.top, 20)
+            
+            Spacer()
+            
+            Text("© 2026 Wako")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.bottom, 20)
+        }
+        .padding(.top, 50)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationTitle("About")
+        .onAppear(perform: checkUpdates)
+    }
+    
+    private func checkUpdates() {
+        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChanger/releases/latest") else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                DispatchQueue.main.async { latestVersion = "Failed to check" }
+                return
+            }
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let tagName = json["tag_name"] as? String {
+                DispatchQueue.main.async {
+                    self.latestVersion = tagName
+                    self.updateAvailable = tagName != currentVersion
+                }
+            }
+        }.resume()
+    }
+}
+
+// MARK: - WhatsNewView
+struct WhatsNewView: View {
+    @State private var releaseNotes = "Loading latest release notes..."
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("What's New")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text(releaseNotes)
+                    .font(.body)
+            }
+            .padding(40)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .navigationTitle("What's New")
+        .onAppear(perform: fetchReleaseNotes)
+    }
+    
+    private func fetchReleaseNotes() {
+        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChanger/releases/latest") else { return }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let body = json["body"] as? String else {
+                DispatchQueue.main.async { releaseNotes = "Failed to load release notes." }
+                return
+            }
+            DispatchQueue.main.async {
+                self.releaseNotes = body
+            }
+        }.resume()
+    }
+}
+
+// MARK: - CreditsView
+struct CreditsView: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .center, spacing: 30) {
+                Text("Credits")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                VStack(spacing: 10) {
+                    Text("Lead Developer")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                    Text("Wako")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                
+                Divider().frame(width: 200)
+                
+                VStack(spacing: 15) {
+                    Text("Integrated Services")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                    
+                    CreditRow(name: "macOSIcons", url: "https://macosicons.com", desc: "A massive community-driven repository of macOS icons.")
+                    CreditRow(name: "Icons8", url: "https://icons8.com", desc: "High-quality design assets and Mac icons.")
+                    CreditRow(name: "Flaticon", url: "https://flaticon.com", desc: "Great repository for minimal folder and UI icons.")
+                    CreditRow(name: "IconFinder", url: "https://iconfinder.com", desc: "Search engine for premium and free icons.")
+                    CreditRow(name: "DeviantArt", url: "https://deviantart.com", desc: "Community for artists and custom Mac folder icons.")
+                }
+            }
+            .padding(40)
+            .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .navigationTitle("Credits")
+    }
+}
+
+struct CreditRow: View {
+    let name: String
+    let url: String
+    let desc: String
+    var body: some View {
+        VStack {
+            Text(name).font(.headline)
+            Link(url, destination: URL(string: url)!)
+                .font(.subheadline)
+            Text(desc)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(.vertical, 5)
+    }
+}
+
+// MARK: - WebView
 struct WebView: NSViewRepresentable {
     @ObservedObject var appState: AppState
     var onDownload: (URL) -> Void
@@ -523,8 +627,7 @@ struct WebView: NSViewRepresentable {
             completionHandler(targetURL)
         }
         
-        func downloadDidFinish(_ download: WKDownload) {
-        }
+        func downloadDidFinish(_ download: WKDownload) {}
         
         private func downloadAndCallback(url: URL) {
             let task = URLSession.shared.downloadTask(with: url) { localURL, response, error in
