@@ -10,7 +10,7 @@
 
 <br/>
 
-## ⚠️ Note for macOS Users (Gatekeeper Warning)
+## ⚠️ Note (Gatekeeper Warning)
 
 When opening the app for the first time, you may see a warning saying: **"Apple could not verify 'IconChanger' is free of malware."**
 
