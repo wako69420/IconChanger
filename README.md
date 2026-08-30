@@ -10,6 +10,12 @@
 
 <br/>
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/wako69420/IconChanger/main/demo.gif" alt="Icon Changer Demo" width="700" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+</div>
+
+<br/>
+
 ## How to Download
 
 If you aren't familiar with GitHub, downloading the app is simple!
