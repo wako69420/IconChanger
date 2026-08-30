@@ -34,9 +34,11 @@ When opening the app for the first time, you may see a warning saying: **"Apple 
 Because this is a free, open-source application, it is not signed with a paid Apple Developer certificate. macOS automatically flags unsigned applications downloaded from the internet to protect you. 
 
 **How to open the app:**
-1. **Right-click** (or `Control`-click) the downloaded `.app` or `.dmg` file.
-2. Select **"Open"** from the context menu.
-3. In the warning dialog that appears, click the new **"Open"** button. 
+1. Try to open **Icon Changer** normally (it will be blocked by a warning). Click "OK".
+2. Open your Mac's **System Settings**.
+3. Navigate to **Privacy & Security**.
+4. Scroll down to the **Security** section.
+5. You will see a message saying "Icon Changer was blocked from use because it is not from an identified developer." Click the **"Open Anyway"** button next to it. 
 *(You only have to do this once! The app will open normally from then on).*
 
 ---
