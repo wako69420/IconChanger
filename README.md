@@ -10,6 +10,20 @@
 
 <br/>
 
+## ⚠️ Note for macOS Users (Gatekeeper Warning)
+
+When opening the app for the first time, you may see a warning saying: **"Apple could not verify 'IconChanger' is free of malware."**
+
+Because this is a free, open-source application, it is not signed with a paid Apple Developer certificate. macOS automatically flags unsigned applications downloaded from the internet to protect you. 
+
+**How to open the app:**
+1. **Right-click** (or `Control`-click) the downloaded `.app` or `.dmg` file.
+2. Select **"Open"** from the context menu.
+3. In the warning dialog that appears, click the new **"Open"** button. 
+*(You only have to do this once! The app will open normally from then on).*
+
+---
+
 ## ✨ Features
 
 - **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and drag an image directly from the web to instantly change its icon.
