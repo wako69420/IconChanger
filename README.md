@@ -24,7 +24,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
-## ✨ Features
+## Features
 
 - **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and drag an image directly from the web to instantly change its icon.
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
@@ -33,7 +33,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. **Launch the App:** Open `Icon Changer.app`.
 2. **Select Target:** Drag the file or application you want to modify and drop it into the **Target** zone on the left sidebar.
@@ -45,7 +45,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
-## 🛠️ Credits & Integration
+## Credits & Integration
 
 **Lead Developer:** wako69420
 
@@ -63,14 +63,14 @@ This app integrates with the best icon repositories on the web to make customiza
 
 ---
 
-## 🌐 Supported Languages
+## Supported Languages
 - English
 
-## 🔒 Privacy Policy
+## Privacy Policy
 Please refer to our [Privacy Policy](PRIVACY.md).
 
-## 📜 License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Contributing
+## Contributing
 Pull requests are welcome! If you'd like to add more icon sources, improve the UI, or add features, feel free to fork this repository and submit a PR.
