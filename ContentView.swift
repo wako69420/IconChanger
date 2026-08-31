@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.3"
+    let currentVersion = "v1.2.4"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -483,12 +483,12 @@ struct SettingsView: View {
             }
             
             Section(header: Text("Storage & Downloads").font(.headline)) {
-                Text(downloadDirectory.isEmpty ? "Icons are currently being saved to the system's Temporary Directory." : "Icons are permanently saved to your custom directory:")
+                Text(downloadDirectory.isEmpty ? "Icons are currently being saved to the system's Temporary Directory (macOS automatically deletes these over time to prevent bloat)." : "Icons are permanently saved to your custom directory:")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
                 HStack {
-                    Text(downloadDirectory.isEmpty ? FileManager.default.temporaryDirectory.path : downloadDirectory)
+                    Text(downloadDirectory.isEmpty ? "System Temporary Directory" : downloadDirectory)
                         .lineLimit(1)
                         .truncationMode(.middle)
                         .frame(width: 300, alignment: .leading)
@@ -507,23 +507,26 @@ struct SettingsView: View {
                     }
                 }
                 
-                HStack {
-                    Button("Open Folder") {
-                        let url = downloadDirectory.isEmpty ? FileManager.default.temporaryDirectory : URL(fileURLWithPath: downloadDirectory)
-                        NSWorkspace.shared.open(url)
-                    }
-                    
-                    Button(downloadDirectory.isEmpty ? "Clear Temporary Downloads" : "Clear Downloaded Icons") {
-                        let dir = downloadDirectory.isEmpty ? FileManager.default.temporaryDirectory : URL(fileURLWithPath: downloadDirectory)
-                        if let urls = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
-                            for url in urls where url.pathExtension == "png" || url.pathExtension == "icns" || url.pathExtension == "zip" {
-                                try? FileManager.default.removeItem(at: url)
+                if !downloadDirectory.isEmpty {
+                    HStack {
+                        Button("Open Folder") {
+                            NSWorkspace.shared.open(URL(fileURLWithPath: downloadDirectory))
+                        }
+                        
+                        Button("Clear Downloaded Icons") {
+                            let dir = URL(fileURLWithPath: downloadDirectory)
+                            if let urls = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
+                                for url in urls where url.pathExtension == "png" || url.pathExtension == "icns" || url.pathExtension == "zip" {
+                                    try? FileManager.default.removeItem(at: url)
+                                }
                             }
                         }
+                        .foregroundColor(.red)
                     }
-                    .foregroundColor(.red)
+                    .padding(.bottom, 20)
+                } else {
+                    Spacer().frame(height: 20)
                 }
-                .padding(.bottom, 20)
             }
             
             Section(header: Text("Updates").font(.headline)) {
@@ -539,7 +542,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.3"
+    let currentVersion = "v1.2.4"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?

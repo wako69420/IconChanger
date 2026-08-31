@@ -16,15 +16,6 @@ struct IconChangerApp: App {
                 }
                 .keyboardShortcut("r", modifiers: [.command, .shift])
                 
-                Button("Clear Temporary Downloads") {
-                    let tempDir = FileManager.default.temporaryDirectory
-                    if let urls = try? FileManager.default.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil) {
-                        for url in urls where url.pathExtension == "png" || url.pathExtension == "icns" {
-                            try? FileManager.default.removeItem(at: url)
-                        }
-                    }
-                }
-                .keyboardShortcut("k", modifiers: [.command, .shift])
             }
             
             CommandGroup(replacing: .help) {
