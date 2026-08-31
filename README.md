@@ -62,6 +62,7 @@ If you notice an app breaking or losing its custom icon shortly after applying i
 ## Features
 
 - **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and **drag an image directly from the built-in web browser into the Target box** to instantly change its icon or add manually via a button.
+- **Universal Compatibility**: Change the icon of virtually anything on macOS. This includes standard folders, text files (`.txt`), documents, scripts, alias shortcuts, standard applications (`.app`), and custom Automator shortcut applications.
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
 - **Save Your Favorites**: Configure a custom Download Directory to permanently archive any icons you apply or download.
 - **Built-in Icon Browsing**: Browse macOSIcons, Icons8, Flaticon, IconFinder, and DeviantArt directly within the app without needing a separate web browser.
