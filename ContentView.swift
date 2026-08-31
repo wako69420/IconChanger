@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.4"
+    let currentVersion = "v1.2.5"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -434,7 +434,16 @@ struct IconChangerView: View {
             
             // Force Finder to update the icon visually
             try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: target)
+            
+            // If it's an app, touch the Info.plist as well to force Launchpad/Finder cache invalidation
+            if target.hasSuffix(".app") {
+                let plistPath = (target as NSString).appendingPathComponent("Contents/Info.plist")
+                try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: plistPath)
+            }
+            
+            // Tell macOS to refresh both the target and its parent folder
             NSWorkspace.shared.noteFileSystemChanged(target)
+            NSWorkspace.shared.noteFileSystemChanged((target as NSString).deletingLastPathComponent)
             
             if !appState.downloadDirectory.isEmpty {
                 let saveDir = URL(fileURLWithPath: appState.downloadDirectory)
@@ -542,7 +551,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.4"
+    let currentVersion = "v1.2.5"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
