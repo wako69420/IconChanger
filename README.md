@@ -27,7 +27,11 @@ If you aren't familiar with GitHub, downloading the app is simple!
 
 ---
 
-## ⚠️ Note (Gatekeeper Warning)
+## ⚠️ Note
+
+Some apps might react negatively with icon being changed, system level apps like appstore.app and settings.app fail to change icons.
+
+(Gatekeeper Warning)
 
 When opening the app for the first time, you may see a warning saying: **"Apple could not verify 'IconChanger' is free of malware."**
 
