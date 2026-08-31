@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.7"
+    let currentVersion = "v1.2.9"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -116,7 +116,7 @@ struct ContentView: View {
     }
     
     private func checkUpdates() {
-        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChanger/releases/latest") else { return }
+        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChangerMAC/releases/latest") else { return }
         URLSession.shared.dataTask(with: url) { data, _, _ in
             if let data = data,
                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -138,7 +138,7 @@ struct ContentView: View {
     
     private func performAutoUpdate(downloadUrl: String) {
         guard !downloadUrl.isEmpty else {
-            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChanger/releases/latest")!)
+            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChangerMAC/releases/latest")!)
             return
         }
         let task = URLSession.shared.downloadTask(with: URL(string: downloadUrl)!) { localUrl, response, error in
@@ -609,7 +609,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.7"
+    let currentVersion = "v1.2.9"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
@@ -691,7 +691,7 @@ struct AboutView: View {
     }
     
     private func checkUpdates() {
-        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChanger/releases/latest") else { return }
+        guard let url = URL(string: "https://api.github.com/repos/wako69420/IconChangerMAC/releases/latest") else { return }
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
                 DispatchQueue.main.async { latestVersion = "Failed to check" }
@@ -721,6 +721,10 @@ struct AboutView: View {
     }
     
     private func performAutoUpdate(downloadUrl: String) {
+        guard !downloadUrl.isEmpty else {
+            NSWorkspace.shared.open(URL(string: "https://github.com/wako69420/IconChangerMAC/releases/latest")!)
+            return
+        }
         isUpdating = true
         updateStatus = "Downloading update..."
         
