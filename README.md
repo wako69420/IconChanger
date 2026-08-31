@@ -27,11 +27,7 @@ If you aren't familiar with GitHub, downloading the app is simple!
 
 ---
 
-## ⚠️ Note
-
-Some apps might react negatively with icon being changed, system level apps like appstore.app and settings.app fail to change icons.
-
-(Gatekeeper Warning)
+## ⚠️ Note (Gatekeeper Warning)
 
 When opening the app for the first time, you may see a warning saying: **"Apple could not verify 'IconChanger' is free of malware."**
 
@@ -47,7 +43,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
-## ⚠️ Warning: Electron Apps & Auto-Updaters
+## Electron Apps & Auto-Updaters
 
 While Icon Changer uses native macOS APIs to safely change icons, **some applications (specifically Electron-based apps like VS Code, Discord, Spotify, or Antigravity) may experience issues or revert their icons.**
 
