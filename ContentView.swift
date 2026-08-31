@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.9"
+    let currentVersion = "v1.3.0"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -153,8 +153,11 @@ struct ContentView: View {
             cd "\(tempDir.path)"
             unzip -q update.zip
             sleep 1
-            rm -rf "\(appPath)"
-            mv "Icon Changer.app" "\(appPath)"
+            if rm -rf "\(appPath)" 2>/dev/null; then
+                mv "Icon Changer.app" "\(appPath)"
+            else
+                osascript -e 'do shell script "rm -rf \\"\(appPath)\\" && mv \\"\(tempDir.path)/Icon Changer.app\\" \\"\(appPath)\\"" with administrator privileges'
+            fi
             open "\(appPath)"
             """
             let scriptUrl = tempDir.appendingPathComponent("update.sh")
@@ -609,7 +612,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.9"
+    let currentVersion = "v1.3.0"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
@@ -751,8 +754,11 @@ struct AboutView: View {
             cd "\(tempDir.path)"
             unzip -q update.zip
             sleep 1
-            rm -rf "\(appPath)"
-            mv "Icon Changer.app" "\(appPath)"
+            if rm -rf "\(appPath)" 2>/dev/null; then
+                mv "Icon Changer.app" "\(appPath)"
+            else
+                osascript -e 'do shell script "rm -rf \\"\(appPath)\\" && mv \\"\(tempDir.path)/Icon Changer.app\\" \\"\(appPath)\\"" with administrator privileges'
+            fi
             open "\(appPath)"
             """
             
