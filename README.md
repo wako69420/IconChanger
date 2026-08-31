@@ -15,8 +15,12 @@
 </div>
 
 <br/>
-This project is archived, i have given up on macos's cache systems. - App and file icon changer works | System level apps and folders do not work even with alia's most of the time
+This project is archived and was a learning project.
+
+I have given up on macos's cache systems. - App and file icon changer works | System level apps and folders do not work even with alias's most of the time
+
 I made this as there were no apple signed open source projects that didnt give a move to trash popup.
+
 [Personal use]
 
 ## How to Download
