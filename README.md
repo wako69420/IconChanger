@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/wako69420/IconChanger/main/IconChangerAppIcon.png" alt="Icon Changer Logo" width="128" />
   <h1>macOS Icon Changer</h1>
-  <p><strong>A native, one-click solution to customize files and applications on macOS.</strong></p>
+  <p><strong> A native, one-click solution to customize files and applications on macOS.</strong></p>
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
   [![Platform: macOS](https://img.shields.io/badge/Platform-macOS%2011%2B-lightgrey.svg)]()
@@ -15,6 +15,7 @@
 </div>
 
 <br/>
+This project is archived.
 
 ## How to Download
 
