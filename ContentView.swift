@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.3.0"
+    let currentVersion = "v1.3.1"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -209,14 +209,14 @@ struct IconChangerView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
-                        if target.hasSuffix(".app") && !(target as NSString).lastPathComponent.contains(" Alias") {
-                            Button("Create Alias (Fix Auto-Updates)") {
+                        if !(target as NSString).lastPathComponent.contains(" Alias") {
+                            Button("Create Alias (Fix Auto-Updates & Dock Stacks)") {
                                 promptCreateAlias(for: target)
                             }
                             .buttonStyle(.bordered)
                             .controlSize(.small)
                             .padding(.top, 5)
-                            .help("Creates a safe alias of this app that won't be overwritten by background updaters (like Discord, Spotify, or System Apps).")
+                            .help("Creates a safe alias. For apps, it prevents updaters from overwriting the icon. For text files, it stops the Dock from forcing a text preview.")
                         }
                     }
                     .padding()
@@ -486,11 +486,18 @@ struct IconChangerView: View {
     }
     
     private func promptCreateAlias(for target: String) {
-        let appName = (target as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+        let pathExtension = (target as NSString).pathExtension
+        var nameWithoutExtension = (target as NSString).lastPathComponent
+        if !pathExtension.isEmpty {
+            nameWithoutExtension = nameWithoutExtension.replacingOccurrences(of: "." + pathExtension, with: "")
+        }
         let savePanel = NSSavePanel()
         savePanel.title = "Save Alias"
-        savePanel.nameFieldStringValue = "\(appName) Alias"
-        savePanel.allowedContentTypes = [UTType.application]
+        if !pathExtension.isEmpty {
+            savePanel.nameFieldStringValue = "\(nameWithoutExtension) Alias.\(pathExtension)"
+        } else {
+            savePanel.nameFieldStringValue = "\(nameWithoutExtension) Alias"
+        }
         savePanel.canCreateDirectories = true
         
         savePanel.begin { result in
@@ -612,7 +619,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.3.0"
+    let currentVersion = "v1.3.1"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
