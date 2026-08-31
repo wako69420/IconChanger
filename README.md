@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/wako69420/IconChanger/main/IconChangerAppIcon.png" alt="Icon Changer Logo" width="128" />
   <h1>macOS Icon Changer</h1>
-  <p><strong>A native, one-click solution to customize files, folders, and applications on macOS.</strong></p>
+  <p><strong>A native, one-click solution to customize files and applications on macOS.</strong></p>
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
   [![Platform: macOS](https://img.shields.io/badge/Platform-macOS%2011%2B-lightgrey.svg)]()
@@ -51,6 +51,7 @@ While Icon Changer safely uses native macOS APIs, you might encounter two specif
 2. **Text Files in Dock Stacks:** If you place a text file or document inside a folder that is pinned to your Dock (a Dock Stack), macOS is hardcoded to forcefully generate a QuickLook text preview, completely ignoring any custom icon you applied.
 
 **The Solution: Alias Generation**
+This is still work in progress and might not work for certain folders.
 Icon Changer features a built-in workaround specifically designed to defeat both of these behaviors:
 1. Drop the stubborn application or text file into the Icon Changer target zone.
 2. Click the **"Create Alias"** button located in the blue Alias Generator information box.
