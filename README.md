@@ -66,6 +66,7 @@ If you notice an app breaking or losing its custom icon shortly after applying i
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
 - **Save Your Favorites**: Configure a custom Download Directory to permanently archive any icons you apply or download.
 - **Built-in Icon Browsing**: Browse macOSIcons, Icons8, Flaticon, IconFinder, and DeviantArt directly within the app without needing a separate web browser.
+- **Anti-Overwrite Aliases**: One-click alias generation for applications like Discord or Spotify that constantly overwrite custom icons with aggressive background auto-updaters.
 - **Automatic Updates**: Built-in update engine checks for new releases on launch and installs them seamlessly in the background.
 - **Optimized Memory Usage**: Inactive browser sessions are automatically deallocated from memory to ensure the application remains lightweight during extended use.
 - **Instant Cache Invalidation**: Proactively overrides the macOS Finder cache system to ensure customized icons update visually on your screen instantly.

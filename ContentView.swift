@@ -205,6 +205,16 @@ struct IconChangerView: View {
                         Text("Drag an image here to apply")
                             .font(.caption)
                             .foregroundColor(.secondary)
+                        
+                        if target.hasSuffix(".app") && !(target as NSString).lastPathComponent.contains(" Alias") {
+                            Button("Create Alias (Fix Auto-Updates)") {
+                                promptCreateAlias(for: target)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .padding(.top, 5)
+                            .help("Creates a safe alias of this app that won't be overwritten by background updaters (like Discord, Spotify, or System Apps).")
+                        }
                     }
                     .padding()
                     .background(Color.secondary.opacity(0.1))
@@ -460,16 +470,51 @@ struct IconChangerView: View {
             
             if !appState.downloadDirectory.isEmpty {
                 let saveDir = URL(fileURLWithPath: appState.downloadDirectory)
-                let fileName = (target as NSString).lastPathComponent + "_\(UUID().uuidString.prefix(4)).png"
-                let saveUrl = saveDir.appendingPathComponent(fileName)
+                let iconURL = saveDir.appendingPathComponent((target as NSString).lastPathComponent + ".icns")
                 if let tiffData = image.tiffRepresentation,
                    let bitmapImage = NSBitmapImageRep(data: tiffData),
                    let pngData = bitmapImage.representation(using: .png, properties: [:]) {
-                    try? pngData.write(to: saveUrl)
+                    try? pngData.write(to: iconURL)
                 }
             }
         } else {
             statusMessage = "Failed to set icon. Check permissions."
+        }
+    }
+    
+    private func promptCreateAlias(for target: String) {
+        let appName = (target as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+        let savePanel = NSSavePanel()
+        savePanel.title = "Save Alias"
+        savePanel.nameFieldStringValue = "\(appName) Alias"
+        savePanel.allowedContentTypes = [UTType.application]
+        savePanel.canCreateDirectories = true
+        
+        savePanel.begin { result in
+            if result == .OK, let url = savePanel.url {
+                createAlias(for: target, at: url)
+            }
+        }
+    }
+    
+    private func createAlias(for target: String, at aliasURL: URL) {
+        let targetURL = URL(fileURLWithPath: target)
+        do {
+            let bookmarkData = try targetURL.bookmarkData(options: .suitableForBookmarkFile, includingResourceValuesForKeys: nil, relativeTo: nil)
+            try URL.writeBookmarkData(bookmarkData, to: aliasURL)
+            
+            // Set the alias as the new target immediately so the user can theme it
+            withAnimation {
+                self.targetPath = aliasURL.path
+                self.statusMessage = "Alias created! Ready to customize."
+            }
+            // Trigger a search for the original app name
+            let name = (target as NSString).lastPathComponent.replacingOccurrences(of: ".app", with: "")
+            if let searchUrl = URL(string: "https://macosicons.com/?search=\(name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name)") {
+                self.appState.webUrl = searchUrl
+            }
+        } catch {
+            statusMessage = "Failed to create alias: \(error.localizedDescription)"
         }
     }
 }
