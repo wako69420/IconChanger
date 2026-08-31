@@ -95,6 +95,13 @@ Because Icon Changer uses native macOS APIs, you can change the icon for virtual
    - *One-Click:* Click the download button on any `.icns` file to have it applied automatically.
 5. **Troubleshooting:** If the icon doesn't update in your Dock immediately, click the **Refresh Dock** button in the sidebar.
 
+## How It Works Under The Hood
+
+Icon Changer relies entirely on official, safe macOS APIs rather than potentially dangerous shell scripts or hacky workarounds. 
+
+1. **Native macOS Integration**: When you apply an icon, the app utilizes `NSWorkspace.shared.setIcon()`, an official Apple protocol that safely writes the image data into the file's extended attributes (or into a hidden `Icon\r` file for folders).
+2. **Instant Cache Invalidation**: The macOS Finder is notorious for aggressively caching file icons, which often results in customized icons refusing to show up until the computer is restarted. To solve this without requiring a restart, Icon Changer explicitly updates the internal modification timestamp of the target (and its parent directory) and pings the system via `noteFileSystemChanged()`. This safely forces macOS to instantly redraw the new icon visually across your entire operating system.
+
 ---
 
 ## Credits & Integration
