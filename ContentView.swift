@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.3.2"
+    let currentVersion = "v1.3.3"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -326,24 +326,39 @@ struct IconChangerView: View {
                 Spacer()
                 
                 Button("Refresh Dock") {
-                    // Deeply clear the Dock's icon cache to force it to redraw preview-based icons
                     let tempDir = FileManager.default.temporaryDirectory.path
-                    if tempDir.hasSuffix("T") || tempDir.hasSuffix("T/") {
-                        let cacheDir = tempDir.hasSuffix("T/") ? tempDir.dropLast(2) + "C/com.apple.dock.iconcache" : tempDir.dropLast(1) + "C/com.apple.dock.iconcache"
-                        try? FileManager.default.removeItem(atPath: String(cacheDir))
+                    var cacheDir = ""
+                    if tempDir.hasSuffix("T/") {
+                        cacheDir = tempDir.dropLast(2) + "C/com.apple.dock.iconcache"
+                    } else if tempDir.hasSuffix("T") {
+                        cacheDir = tempDir.dropLast(1) + "C/com.apple.dock.iconcache"
                     }
+                    var qlCacheDir = cacheDir.replacingOccurrences(of: "com.apple.dock.iconcache", with: "com.apple.QuickLook.thumbnailcache")
                     
-                    let task = Process()
-                    task.launchPath = "/usr/bin/killall"
-                    task.arguments = ["Dock"]
-                    task.launch()
-                    
-                    let qlTask = Process()
-                    qlTask.launchPath = "/usr/bin/qlmanage"
-                    qlTask.arguments = ["-r", "cache"]
-                    qlTask.launch()
-                    
-                    statusMessage = "Dock deeply refreshed!"
+                    do {
+                        try FileManager.default.removeItem(atPath: cacheDir)
+                        try? FileManager.default.removeItem(atPath: qlCacheDir)
+                        
+                        let task = Process()
+                        task.launchPath = "/usr/bin/killall"
+                        task.arguments = ["Dock"]
+                        task.launch()
+                        
+                        let qlTask = Process()
+                        qlTask.launchPath = "/usr/bin/qlmanage"
+                        qlTask.arguments = ["-r", "cache"]
+                        qlTask.launch()
+                        
+                        statusMessage = "Dock deeply refreshed!"
+                    } catch {
+                        // Needs admin privileges to clear cache!
+                        let script = "rm -rf '\(cacheDir)' && rm -rf '\(qlCacheDir)' && qlmanage -r cache && killall Dock"
+                        let process = Process()
+                        process.launchPath = "/usr/bin/osascript"
+                        process.arguments = ["-e", "do shell script \"\(script)\" with administrator privileges"]
+                        process.launch()
+                        statusMessage = "Dock deeply refreshed (Admin)."
+                    }
                 }
                 .buttonStyle(.link)
                 .padding(.bottom, 5)
@@ -634,7 +649,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.3.2"
+    let currentVersion = "v1.3.3"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
