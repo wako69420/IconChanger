@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.3.1"
+    let currentVersion = "v1.3.2"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -208,16 +208,6 @@ struct IconChangerView: View {
                         Text("Drag an image here to apply")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
-                        if !(target as NSString).lastPathComponent.contains(" Alias") {
-                            Button("Create Alias (Fix Auto-Updates & Dock Stacks)") {
-                                promptCreateAlias(for: target)
-                            }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                            .padding(.top, 5)
-                            .help("Creates a safe alias. For apps, it prevents updaters from overwriting the icon. For text files, it stops the Dock from forcing a text preview.")
-                        }
                     }
                     .padding()
                     .background(Color.secondary.opacity(0.1))
@@ -284,22 +274,47 @@ struct IconChangerView: View {
 
                 Spacer()
                 
-                VStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "lightbulb.fill")
-                        .foregroundColor(.yellow)
-                        .font(.title2)
-                    Text("Did you know?")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                    Text("You can drag any icon directly from the browser on the right and drop it into the target box above to apply it instantly!")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
+                if let target = targetPath, !(target as NSString).lastPathComponent.contains(" Alias") {
+                    VStack(alignment: .center, spacing: 8) {
+                        Image(systemName: "arrow.uturn.up")
+                            .foregroundColor(.accentColor)
+                            .font(.title2)
+                        Text("Alias Generator")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                        Text("Create a safe alias to stop auto-updaters from overwriting the icon, or to fix Dock Stack previews.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                        Button("Create Alias") {
+                            promptCreateAlias(for: target)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        .padding(.top, 2)
+                    }
+                    .padding(15)
+                    .background(Color.secondary.opacity(0.1))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
+                } else {
+                    VStack(alignment: .center, spacing: 8) {
+                        Image(systemName: "lightbulb.fill")
+                            .foregroundColor(.yellow)
+                            .font(.title2)
+                        Text("Did you know?")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                        Text("You can drag any icon directly from the browser on the right and drop it into the target box above to apply it instantly!")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(15)
+                    .background(Color.secondary.opacity(0.1))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 20)
                 }
-                .padding(15)
-                .background(Color.secondary.opacity(0.1))
-                .cornerRadius(12)
-                .padding(.horizontal, 20)
                 
                 Text("Supports: Apps, Folders, Drives & All Files (.pdf, .txt, etc.)")
                     .font(.system(size: 10))
@@ -619,7 +634,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.3.1"
+    let currentVersion = "v1.3.2"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
