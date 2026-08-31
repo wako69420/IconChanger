@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.1"
+    let currentVersion = "v1.2.2"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -431,6 +431,11 @@ struct IconChangerView: View {
         if success {
             statusMessage = "Icon successfully updated!"
             refreshId = UUID()
+            
+            // Force Finder to update the icon visually
+            try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: target)
+            NSWorkspace.shared.noteFileSystemChanged(target)
+            
             if !appState.downloadDirectory.isEmpty {
                 let saveDir = URL(fileURLWithPath: appState.downloadDirectory)
                 let fileName = (target as NSString).lastPathComponent + "_\(UUID().uuidString.prefix(4)).png"
@@ -516,7 +521,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.1"
+    let currentVersion = "v1.2.2"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
