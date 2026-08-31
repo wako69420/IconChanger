@@ -45,7 +45,7 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ## Electron Apps & Auto-Updaters
 
-While Icon Changer uses native macOS APIs to safely change icons, **some applications (specifically Electron-based apps like VS Code, Discord, Spotify, or Antigravity) may experience issues or revert their icons.**
+While Icon Changer uses native macOS APIs to safely change icons, **some applications (specifically Electron-based apps like VS Code, Discord, Spotify, or Antigravity) may experience issues or revert their icons.** [Making an .Alias of the app will fix it but the app when open will revert to the original icon in the dock]
 
 **Why does this happen?**
 Many modern apps use aggressive background auto-updaters (like `Squirrel.Mac`). When you change an app's icon, macOS adds a hidden custom icon file (`Icon\r`) to the app bundle. The background auto-updater performs strict security checks on the app's files, and it flags this custom icon as an unauthorized modification. 
