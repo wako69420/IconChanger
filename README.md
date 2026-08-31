@@ -45,17 +45,19 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ## Electron Apps & Auto-Updaters
 
-While Icon Changer uses native macOS APIs to safely change icons, **some applications (specifically Electron-based apps like VS Code, Discord, Spotify, or Antigravity) may experience issues or revert their icons.** [Making an .Alias of the app will fix it but the app when open will revert to the original icon in the dock]
+While Icon Changer safely uses native macOS APIs, you might notice that some applications (like VS Code, Discord, or Spotify) stubbornly revert to their original icons a few days after you change them. 
 
 **Why does this happen?**
-Many modern apps use aggressive background auto-updaters (like `Squirrel.Mac`). When you change an app's icon, macOS adds a hidden custom icon file (`Icon\r`) to the app bundle. The background auto-updater performs strict security checks on the app's files, and it flags this custom icon as an unauthorized modification. 
+Many modern apps use aggressive background auto-updaters. When these apps download an update in the background, they completely overwrite their own application folder with a fresh installation, silently wiping out your custom icon in the process.
 
-**What happens if the updater flags it?**
-- The background update may fail, which can sometimes temporarily break the app or cause it to crash on launch.
-- To repair itself, the app will force a fresh download of the entire application.
-- This fresh installation overwrites the app bundle, completely removing your custom icon and reverting it to the default.
+**The Solution: Anti-Overwrite Aliases**
+Icon Changer features a built-in workaround specifically designed for these stubborn apps:
+1. Drop the application into the Icon Changer target zone.
+2. Click the **"Create Alias (Fix Auto-Updates)"** button that appears below the target.
+3. A standard macOS save window will pop up, allowing you to choose exactly where to save a lightweight alias (like your Desktop or user Applications folder).
+4. Icon Changer automatically targets this new alias. Apply your custom icon to the alias, and pin the alias to your Dock! 
 
-If you notice an app breaking or losing its custom icon shortly after applying it, this built-in auto-updater behavior is the cause.
+When the original app updates itself in the background, your alias will remain completely untouched and safe, preserving your custom icon permanently.
 
 ---
 
@@ -66,7 +68,7 @@ If you notice an app breaking or losing its custom icon shortly after applying i
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
 - **Save Your Favorites**: Configure a custom Download Directory to permanently archive any icons you apply or download.
 - **Built-in Icon Browsing**: Browse macOSIcons, Icons8, Flaticon, IconFinder, and DeviantArt directly within the app without needing a separate web browser.
-- **Anti-Overwrite Aliases**: One-click alias generation for applications like Discord or Spotify that constantly overwrite custom icons with aggressive background auto-updaters.
+- **Anti-Overwrite Aliases**: One-click alias generation for applications like Discord or Spotify that constantly overwrite custom icons with aggressive background auto-updaters. A native save window pops up so you can safely place the alias wherever you prefer.
 - **Automatic Updates**: Built-in update engine checks for new releases on launch and installs them seamlessly in the background.
 - **Optimized Memory Usage**: Inactive browser sessions are automatically deallocated from memory to ensure the application remains lightweight during extended use.
 - **Instant Cache Invalidation**: Proactively overrides the macOS Finder cache system to ensure customized icons update visually on your screen instantly.
