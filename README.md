@@ -43,21 +43,22 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
-## Electron Apps & Auto-Updaters
+## Stubborn Apps & Dock Stacks
 
-While Icon Changer safely uses native macOS APIs, you might notice that some applications (like VS Code, Discord, or Spotify) stubbornly revert to their original icons a few days after you change them. 
+While Icon Changer safely uses native macOS APIs, you might encounter two specific scenarios where macOS stubbornly refuses to show your custom icon:
 
-**Why does this happen?**
-Many modern apps use aggressive background auto-updaters. When these apps download an update in the background, they completely overwrite their own application folder with a fresh installation, silently wiping out your custom icon in the process.
+1. **Auto-Updating Apps (Discord, Spotify, VS Code):** Many modern apps use aggressive background auto-updaters. When these apps download an update, they completely overwrite their own application folder with a fresh installation, silently wiping out your custom icon in the process.
+2. **Text Files in Dock Stacks:** If you place a text file or document inside a folder that is pinned to your Dock (a Dock Stack), macOS is hardcoded to forcefully generate a QuickLook text preview, completely ignoring any custom icon you applied.
 
-**The Solution: Anti-Overwrite Aliases**
-Icon Changer features a built-in workaround specifically designed for these stubborn apps:
-1. Drop the application into the Icon Changer target zone.
-2. Click the **"Create Alias (Fix Auto-Updates)"** button that appears below the target.
+**The Solution: Alias Generation**
+Icon Changer features a built-in workaround specifically designed to defeat both of these behaviors:
+1. Drop the stubborn application or text file into the Icon Changer target zone.
+2. Click the **"Create Alias"** button located in the blue Alias Generator information box.
 3. A standard macOS save window will pop up, allowing you to choose exactly where to save a lightweight alias (like your Desktop or user Applications folder).
-4. Icon Changer automatically targets this new alias. Apply your custom icon to the alias, and pin the alias to your Dock! 
+4. Icon Changer automatically targets this new alias. Apply your custom icon directly to the alias.
+5. Finally, place the alias in your Dock or Dock Stack instead of the original file! 
 
-When the original app updates itself in the background, your alias will remain completely untouched and safe, preserving your custom icon permanently.
+For apps, your alias will remain completely untouched and safe when the background updater runs. For text files, the Dock won't be able to generate a text preview from the alias, forcing it to beautifully render your custom icon instead.
 
 ---
 
@@ -68,7 +69,7 @@ When the original app updates itself in the background, your alias will remain c
 - **Native macOS Design**: Built entirely with SwiftUI, featuring translucent sidebars, vibrant materials, and an integrated native web browser.
 - **Save Your Favorites**: Configure a custom Download Directory to permanently archive any icons you apply or download.
 - **Built-in Icon Browsing**: Browse macOSIcons, Icons8, Flaticon, IconFinder, and DeviantArt directly within the app without needing a separate web browser.
-- **Anti-Overwrite Aliases**: One-click alias generation for applications like Discord or Spotify that constantly overwrite custom icons with aggressive background auto-updaters. A native save window pops up so you can safely place the alias wherever you prefer.
+- **Alias Generator**: A dedicated one-click alias generation UI for bypassing macOS quirks. Creates safe aliases for applications (like Discord or Spotify) that constantly overwrite custom icons with aggressive background auto-updaters, and completely fixes the macOS Dock Stack text preview limitation for text files and documents. A native save window pops up so you can safely place the alias wherever you prefer.
 - **Automatic Updates**: Built-in update engine checks for new releases on launch and installs them seamlessly in the background.
 - **Optimized Memory Usage**: Inactive browser sessions are automatically deallocated from memory to ensure the application remains lightweight during extended use.
 - **Instant Cache Invalidation**: Proactively overrides the macOS Finder cache system to ensure customized icons update visually on your screen instantly.
