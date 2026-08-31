@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.6"
+    let currentVersion = "v1.2.7"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -309,6 +309,12 @@ struct IconChangerView: View {
                     task.launchPath = "/usr/bin/killall"
                     task.arguments = ["Dock"]
                     task.launch()
+                    
+                    let qlTask = Process()
+                    qlTask.launchPath = "/usr/bin/qlmanage"
+                    qlTask.arguments = ["-r", "cache"]
+                    qlTask.launch()
+                    
                     statusMessage = "Dock deeply refreshed!"
                 }
                 .buttonStyle(.link)
@@ -558,7 +564,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.6"
+    let currentVersion = "v1.2.7"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
