@@ -48,7 +48,7 @@ struct ContentView: View {
     @State private var updateMessage = ""
     @State private var updateAssetUrl = ""
     @State private var isDownloadingUpdate = false
-    let currentVersion = "v1.2.0"
+    let currentVersion = "v1.2.1"
     
     var colorScheme: ColorScheme? {
         if themePreference == 1 { return .light }
@@ -420,6 +420,7 @@ struct IconChangerView: View {
                         DispatchQueue.main.async { statusMessage = "Invalid image file." }
                     }
                 }
+                .id(appState.webUrl)
             }
         }
         .navigationTitle("Icon Changer")
@@ -515,7 +516,7 @@ struct SettingsView: View {
 
 // MARK: - AboutView
 struct AboutView: View {
-    let currentVersion = "v1.2.0"
+    let currentVersion = "v1.2.1"
     @State private var latestVersion = "Checking..."
     @State private var updateAvailable = false
     @State private var updateAssetUrl: String?
