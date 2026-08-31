@@ -47,6 +47,22 @@ Because this is a free, open-source application, it is not signed with a paid Ap
 
 ---
 
+## ⚠️ Warning: Electron Apps & Auto-Updaters
+
+While Icon Changer uses native macOS APIs to safely change icons, **some applications (specifically Electron-based apps like VS Code, Discord, Spotify, or Antigravity) may experience issues or revert their icons.**
+
+**Why does this happen?**
+Many modern apps use aggressive background auto-updaters (like `Squirrel.Mac`). When you change an app's icon, macOS adds a hidden custom icon file (`Icon\r`) to the app bundle. The background auto-updater performs strict security checks on the app's files, and it flags this custom icon as an unauthorized modification. 
+
+**What happens if the updater flags it?**
+- The background update may fail, which can sometimes temporarily break the app or cause it to crash on launch.
+- To repair itself, the app will force a fresh download of the entire application.
+- This fresh installation overwrites the app bundle, completely removing your custom icon and reverting it to the default.
+
+If you notice an app breaking or losing its custom icon shortly after applying it, this built-in auto-updater behavior is the cause.
+
+---
+
 ## Features
 
 - **Drag & Drop Simplicity**: Drop any `.app`, folder, or file into the app, and **drag an image directly from the built-in web browser into the Target box** to instantly change its icon.
