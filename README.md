@@ -15,16 +15,16 @@
 </div>
 
 <br/>
-**This project is archived and was a learning project.**
+> [!NOTE]
+> **This project is archived and was a learning project.**
+> I have given up on macOS's cache systems.
+> I made this as there were no Apple-signed open source projects that didn't give a "move to trash" popup.
+> 
+> [Personal use]
 
-**I have given up on macos's cache systems.**
-
-**-App and file icon changer works | System level apps and folders in /applications directory specifically do not work even with alias's most of the time
--Drag and drop feature does fail sometimes, in that case you can click "download" on the icon for macosicons and it will apply.**
-
-**I made this as there were no apple signed open source projects that didnt give a move to trash popup.**
-
-[Personal use]
+> [!WARNING]
+> - App and file icon changer works | System level apps and folders in the `/Applications` directory specifically do not work even with aliases most of the time.
+> - Drag and drop feature does fail sometimes, in that case you can click "download" on the icon for macOSicons and it will apply.
 
 ## How to Download
 
