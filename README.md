@@ -123,8 +123,6 @@ Icon Changer relies entirely on official, safe macOS APIs rather than potentiall
 
 **Lead Developer:** wako69420
 
-https://github.com/getopenscreen/openscreen
-
 This app integrates with the best icon repositories on the web to make customization seamless:
 - [**macOSIcons**](https://macosicons.com) - A massive community-driven repository of macOS icons. Thanks to the community and developers.
 - [**Icons8**](https://icons8.com) - High-quality design assets and Mac icons.
